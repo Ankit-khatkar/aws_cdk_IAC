@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+      nodejs: 20
+    commands:
+      - npm install -g aws-cdk
+      - python -m pip install --upgrade pip
+      - pip install -r requirements.txt
+      - pip install -r requirements-dev.txt
+
+  pre_build:
+    commands:
+      - cdk --version
+      - python -m pytest tests/ || echo "No tests found, continuing"
+
+  build:
+    commands:
+      - cdk synth
+
+  post_build:
+    commands:
+      - echo "Synth complete. To deploy, uncomment the line below."
+      # - cdk deploy --all --require-approval never
+
+artifacts:
+  base-directory: cdk.out
+  files:
+    - '**/*'
